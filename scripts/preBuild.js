@@ -1,31 +1,31 @@
-const fs = require("fs");
-const path = require("path");
+const { readdirSync, readFileSync, writeFileSync, existsSync, lstatSync, unlinkSync, rmdirSync } = require("fs");
+const { join } = require("path");
 
-function deleteFolderRecursive(folderPath) {
-  if (fs.existsSync(folderPath)) {
-    fs.readdirSync(folderPath).forEach((file, index) => {
-      const curPath = path.join(folderPath, file);
-      if (fs.lstatSync(curPath).isDirectory()) {
+const deleteFolderRecursive = (folderPath) => {
+  if (existsSync(folderPath)) {
+    readdirSync(folderPath).forEach((file) => {
+      const curPath = join(folderPath, file);
+      if (lstatSync(curPath).isDirectory()) {
         // recurse
         deleteFolderRecursive(curPath);
       } else {
         // delete file
-        fs.unlinkSync(curPath);
+        unlinkSync(curPath);
       }
     });
-    fs.rmdirSync(folderPath);
+    rmdirSync(folderPath);
   }
-}
+};
 
-function generateProdTSConfig() {
-  const tsconfigSvelteJSONPath = path.join(__dirname, "..", "tsconfig.svelte.json");
-  const tsconfigElectronJSONPath = path.join(__dirname, "..", "tsconfig.electron.json");
+const generateProdTSConfig = () => {
+  const tsconfigSvelteJSONPath = join(__dirname, "..", "tsconfig.svelte.json");
+  const tsconfigElectronJSONPath = join(__dirname, "..", "tsconfig.electron.json");
 
-  const tsconfigSvelteJSONRaw = fs.readFileSync(tsconfigSvelteJSONPath, "utf8");
-  const tsconfigSvelteJSON = JSON.parse(tsconfigSvelteJSONRaw);
+  const tsconfigSvelteJSONRaw = readFileSync(tsconfigSvelteJSONPath, "utf8");
+  const tsconfigSvelteJSON = JSON.parse(tsconfigSvelteJSONRaw); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
-  const tsconfigElectronJSONRaw = fs.readFileSync(tsconfigElectronJSONPath, "utf8");
-  const tsconfigElectronJSON = JSON.parse(tsconfigElectronJSONRaw);
+  const tsconfigElectronJSONRaw = readFileSync(tsconfigElectronJSONPath, "utf8");
+  const tsconfigElectronJSON = JSON.parse(tsconfigElectronJSONRaw); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
   tsconfigSvelteJSON.compilerOptions.sourceMap = false;
   tsconfigElectronJSON.compilerOptions.sourceMap = false;
@@ -36,12 +36,12 @@ function generateProdTSConfig() {
     "tsconfig.electron.prod.json"
   );
 
-  fs.writeFileSync(newTsconfigSvelteJSONPath, JSON.stringify(tsconfigSvelteJSON));
-  fs.writeFileSync(newTsconfigElectronJSONPath, JSON.stringify(tsconfigElectronJSON));
-}
+  writeFileSync(newTsconfigSvelteJSONPath, JSON.stringify(tsconfigSvelteJSON));
+  writeFileSync(newTsconfigElectronJSONPath, JSON.stringify(tsconfigElectronJSON));
+};
 
-const buildSveltePath = path.join(__dirname, "..", "public", "build");
-const buildElectronPath = path.join(__dirname, "..", "build");
+const buildSveltePath = join(__dirname, "..", "public", "build");
+const buildElectronPath = join(__dirname, "..", "build");
 deleteFolderRecursive(buildSveltePath);
 deleteFolderRecursive(buildElectronPath);
 

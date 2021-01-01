@@ -2,6 +2,10 @@
 
 Template for apps written with [Electron](https://github.com/electron/electron), [Svelte](https://github.com/sveltejs/svelte) and [Typescript](https://github.com/microsoft/TypeScript).
 
+The template does hot module replacement and reloads electron on main process file changes out of the box.
+It also follows some good security practices, such as Content-Security-Policy meta tags in html,
+context isolation set to true, remote modules set to false etc.
+
 ## Get started
 
 To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
@@ -26,10 +30,9 @@ npm start
 ```
 
 The start script spins up [Rollup](https://github.com/rollup/rollup)
-in watch mode with a [sirv](https://github.com/lukeed/sirv) instance
-serving the static files on [localhost:5000](http://localhost:5000) and a
-nodemon server on [localhost:5858](http://localhost:5858) with a
-typescript compiler.
+in watch mode with a [Rollup-Plugin-Serve](https://github.com/thgh/rollup-plugin-serve) instance
+serving the frontend static files on [localhost:5000](http://localhost:5000) and a
+nodemon server to watch for file changes related to the main electron process.
 
 Electron loads its html content from [localhost:5000](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron/index.ts#L40)
 in dev mode and from [build/public/index.html](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/src/electron/index.ts#L38)
@@ -61,7 +64,19 @@ In production mode, sourcemaps are [disabled](https://github.com/fuzzc0re/electr
 
 ## Contributing
 
-You should run the following command on your contributed code:
+In order to lint the code you run:
+
+```bash
+npm run lint
+```
+
+In order to prettify the code you run:
+
+```bash
+npm run format
+```
+
+You should run the following command, which runs lint and then format, on your contributed code:
 
 ```bash
 npm run preversion

@@ -1,23 +1,23 @@
-const fs = require("fs");
-const path = require("path");
+const { existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync } = require("fs");
+const { join } = require("path");
 
-function deleteFolderRecursive(folderPath) {
-  if (fs.existsSync(folderPath)) {
-    fs.readdirSync(folderPath).forEach((file, index) => {
-      const curPath = path.join(folderPath, file);
-      if (fs.lstatSync(curPath).isDirectory()) {
+const deleteFolderRecursive = (folderPath) => {
+  if (existsSync(folderPath)) {
+    readdirSync(folderPath).forEach((file) => {
+      const curPath = join(folderPath, file);
+      if (lstatSync(curPath).isDirectory()) {
         // recurse
         deleteFolderRecursive(curPath);
       } else {
         // delete file
-        fs.unlinkSync(curPath);
+        unlinkSync(curPath);
       }
     });
-    fs.rmdirSync(folderPath);
+    rmdirSync(folderPath);
   }
-}
+};
 
-const buildSveltePath = path.join(__dirname, "..", "public", "build");
-const buildElectronPath = path.join(__dirname, "..", "build");
+const buildSveltePath = join(__dirname, "..", "public", "build");
+const buildElectronPath = join(__dirname, "..", "build");
 deleteFolderRecursive(buildSveltePath);
 deleteFolderRecursive(buildElectronPath);

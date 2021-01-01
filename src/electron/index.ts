@@ -5,12 +5,13 @@ import {
   // nativeImage
 } from "electron";
 import { join } from "path";
+import { parse } from "url";
 import { autoUpdater } from "electron-updater";
 
 import logger from "./utils/logger";
 import settings from "./utils/settings";
 
-const isProd = process.env.NODE_ENV === "production" || !process.execPath.match(/[\\/]electron/);
+const isProd = process.env.NODE_ENV === "production" || !/[\\/]electron/.exec(process.execPath); // !process.execPath.match(/[\\/]electron/);
 
 logger.info("App starting...");
 settings.set("check", true);
@@ -20,7 +21,7 @@ logger.info(settings.get("check") ? "Settings store works correctly." : "Setting
 let mainWindow: BrowserWindow | null;
 let notification: Notification | null;
 
-function createWindow() {
+const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
@@ -38,14 +39,18 @@ function createWindow() {
         `file://${join(__dirname, "public", "index.html")}`
       : // in dev, target the host and port of the local rollup web server
         "http://localhost:5000";
-  mainWindow.loadURL(url);
+
+  mainWindow.loadURL(url).catch((err) => {
+    logger.error(JSON.stringify(err));
+    app.quit();
+  });
 
   if (!isProd) mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-}
+};
 
 app.on("ready", createWindow);
 
@@ -72,18 +77,28 @@ app.on("web-contents-created", (e, contents) => {
     webPreferences.nodeIntegration = false;
 
     // Verify URL being loaded
-    // if (!params.src.startsWith("https://example.com/")) {
-    event.preventDefault(); // We do not open anything now
+    // if (!params.src.startsWith(`file://${join(__dirname)}`)) {
+    //   event.preventDefault(); // We do not open anything now
     // }
   });
 
   contents.on("will-navigate", (event, navigationUrl) => {
-    logger.warn("Tried to open: " + navigationUrl);
-    event.preventDefault();
+    const parsedURL = parse(navigationUrl);
+    // In dev mode allow Hot Module Replacement
+    if (parsedURL.host !== "localhost:5000" && !isProd) {
+      logger.warn("Stopped attempt to open: " + navigationUrl);
+      event.preventDefault();
+    } else if (isProd) {
+      logger.warn("Stopped attempt to open: " + navigationUrl);
+      event.preventDefault();
+    }
   });
 });
 
-if (isProd) autoUpdater.checkForUpdates();
+if (isProd)
+  autoUpdater.checkForUpdates().catch((err) => {
+    logger.error(JSON.stringify(err));
+  });
 
 autoUpdater.logger = logger;
 
@@ -96,7 +111,9 @@ autoUpdater.on("update-available", () => {
   });
   notification.show();
   notification.on("click", () => {
-    autoUpdater.downloadUpdate();
+    autoUpdater.downloadUpdate().catch((err) => {
+      logger.error(JSON.stringify(err));
+    });
   });
 });
 
@@ -126,7 +143,7 @@ autoUpdater.on("update-downloaded", () => {
 autoUpdater.on("error", (err) => {
   notification = new Notification({
     title: "Fluide",
-    body: err,
+    body: JSON.stringify(err),
     // icon: nativeImage.createFromPath(join(__dirname, "..", "assets", "icon.png"),
   });
   notification.show();
