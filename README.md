@@ -8,11 +8,12 @@ context isolation set to true, remote modules set to false etc.
 
 ## Get started
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+To create a new project based on this template you must first clone the repo and then delete the folder .git:
 
 ```bash
-npx degit fuzzc0re/electron-svelte-typescript-boilerplate MyApp
-cd MyApp
+git clone https://github.com/fuzzc0re/electron-svelte-typescript MyAppName
+cd MyAppName
+rm -rf .git
 ```
 
 _Note that you will need to have [Node.js](https://nodejs.org) installed._
