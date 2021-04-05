@@ -41,7 +41,11 @@ export default {
   },
   plugins: [
     svelte({
-      preprocess: sveltePreprocess(),
+      preprocess: sveltePreprocess({
+          typescript: {
+            tsconfigFile: production ? "./tsconfig.svelte.prod.json" : "./tsconfig.svelte.json",
+          }
+        }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
