@@ -89,4 +89,4 @@ All suggestions are welcome!
 
 ## Licence
 
-This project is licensed under the terms described in [LICENSE](https://github.com/fuzzc0re/electron-svelte-typescript-boilerplate/LICENSE).
+This project is licensed under the terms described in [LICENSE](https://github.com/fuzzc0re/electron-svelte-typescript/blob/master/LICENSE).
