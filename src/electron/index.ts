@@ -11,7 +11,7 @@ import { autoUpdater } from "electron-updater";
 import logger from "./utils/logger";
 import settings from "./utils/settings";
 
-const isProd = process.env.NODE_ENV === "production" || !/[\\/]electron/.exec(process.execPath); // !process.execPath.match(/[\\/]electron/);
+const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
 
 logger.info("App starting...");
 settings.set("check", true);
@@ -28,7 +28,6 @@ const createWindow = () => {
     webPreferences: {
       devTools: isProd ? false : true,
       contextIsolation: true,
-      enableRemoteModule: false,
     },
   });
 

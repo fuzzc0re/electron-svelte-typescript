@@ -17,9 +17,16 @@ const deleteFolderRecursive = (folderPath) => {
   }
 };
 
+const fixElectronTsconfig = () => {
+  const tsconfigElectronJSONPath = join(__dirname, "..", "src", "electron", "tsconfig.json");
+  const tsconfigElectronJSONRaw = readFileSync(tsconfigElectronJSONPath, "utf8");
+  const tsconfigElectronJSON = JSON.parse(tsconfigElectronJSONRaw); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+  tsconfigElectronJSON.compilerOptions.outDir = "build";
+};
+
 const generateProdTSConfig = () => {
-  const tsconfigSvelteJSONPath = join(__dirname, "..", "tsconfig.svelte.json");
-  const tsconfigElectronJSONPath = join(__dirname, "..", "tsconfig.electron.json");
+  const tsconfigSvelteJSONPath = join(__dirname, "..", "src", "frontend", "tsconfig.json");
+  const tsconfigElectronJSONPath = join(__dirname, "..", "src", "electron", "tsconfig.json");
 
   const tsconfigSvelteJSONRaw = readFileSync(tsconfigSvelteJSONPath, "utf8");
   const tsconfigSvelteJSON = JSON.parse(tsconfigSvelteJSONRaw); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
@@ -28,13 +35,13 @@ const generateProdTSConfig = () => {
   const tsconfigElectronJSON = JSON.parse(tsconfigElectronJSONRaw); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
   tsconfigSvelteJSON.compilerOptions.sourceMap = false;
+  tsconfigSvelteJSON.include = [join(__dirname, "..", "src", "frontend")];
   tsconfigElectronJSON.compilerOptions.sourceMap = false;
+  tsconfigElectronJSON.compilerOptions.outDir = "build";
+  tsconfigElectronJSON.include = [join(__dirname, "..", "src", "electron")];
 
-  const newTsconfigSvelteJSONPath = tsconfigSvelteJSONPath.replace("tsconfig.svelte.json", "tsconfig.svelte.prod.json");
-  const newTsconfigElectronJSONPath = tsconfigElectronJSONPath.replace(
-    "tsconfig.electron.json",
-    "tsconfig.electron.prod.json"
-  );
+  const newTsconfigSvelteJSONPath = join(__dirname, "..", "tsconfig.svelte.prod.json");
+  const newTsconfigElectronJSONPath = join(__dirname, "..", "tsconfig.electron.prod.json");
 
   writeFileSync(newTsconfigSvelteJSONPath, JSON.stringify(tsconfigSvelteJSON));
   writeFileSync(newTsconfigElectronJSONPath, JSON.stringify(tsconfigElectronJSON));

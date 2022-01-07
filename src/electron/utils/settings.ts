@@ -1,4 +1,4 @@
-import ElectronStore = require("electron-store");
+import ElectronStore from "electron-store";
 
 interface ISettings {
   check: boolean;
