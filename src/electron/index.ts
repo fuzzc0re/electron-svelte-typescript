@@ -103,7 +103,7 @@ autoUpdater.logger = logger;
 
 autoUpdater.on("update-available", () => {
   notification = new Notification({
-    title: "Fluide",
+    title: "Electron-Svelte-Typescript",
     body: "Updates are available. Click to download.",
     silent: true,
     // icon: nativeImage.createFromPath(join(__dirname, "..", "assets", "icon.png"),
@@ -118,7 +118,7 @@ autoUpdater.on("update-available", () => {
 
 autoUpdater.on("update-not-available", () => {
   notification = new Notification({
-    title: "Fluide",
+    title: "Electron-Svelte-Typescript",
     body: "Your software is up to date.",
     silent: true,
     // icon: nativeImage.createFromPath(join(__dirname, "..", "assets", "icon.png"),
@@ -128,7 +128,7 @@ autoUpdater.on("update-not-available", () => {
 
 autoUpdater.on("update-downloaded", () => {
   notification = new Notification({
-    title: "Fluide",
+    title: "Electron-Svelte-Typescript",
     body: "The updates are ready. Click to quit and install.",
     silent: true,
     // icon: nativeImage.createFromPath(join(__dirname, "..", "assets", "icon.png"),
@@ -141,7 +141,7 @@ autoUpdater.on("update-downloaded", () => {
 
 autoUpdater.on("error", (err) => {
   notification = new Notification({
-    title: "Fluide",
+    title: "Electron-Svelte-Typescript",
     body: JSON.stringify(err),
     // icon: nativeImage.createFromPath(join(__dirname, "..", "assets", "icon.png"),
   });
